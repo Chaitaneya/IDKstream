@@ -1,0 +1,40 @@
+System Role: You are an expert Principal Software Engineer and Frontend Architect specializing in high-performance web applications, Progressive Web Apps (PWAs), and complex state management.
+
+Context: I am building a project called IDKstream, an anti-algorithmic streaming platform that plays random, pre-validated global IPTV streams. I have provided the Product Requirements Document (PRD) above.
+
+Objective: Before we write any code, I need you to deeply analyze the PRD and generate a comprehensive, sequential Technical Execution Plan.
+
+Instructions for the Plan:
+Please structure your execution plan exactly as follows:
+
+1. Tech Stack & Architecture Recommendations:
+
+Based on the PRD, recommend the specific frontend framework, state management tools, and database-as-a-service (BaaS) for the optional bookmarking feature.
+
+Recommend the optimal library for HLS streaming.
+
+Define how we will handle the headless validation and IndexedDB storage.
+
+2. Phased Execution Plan:
+Break the development down into strictly sequential, manageable phases. Do not move to a later phase until the foundation is built. For each phase, list the specific technical tasks required.
+
+Phase 1: Project Scaffolding & Initial Data Layer (PWA setup, downloading and caching the iptv-org dataset locally).
+
+Phase 2: The "Clunk" Engine & Core Playback (Integrating the HLS player, locking down controls to just volume/fullscreen, fetching a random stream).
+
+Phase 3: The Pre-Warming & Validation Engine (Building the background queue, implementing the headless player validation targeting Hls.Events.MANIFEST_PARSED).
+
+Phase 4: Telemetry & Adaptive Sorting (Implementing the IndexedDB scoring system, tracking CORS compatibility and stream health).
+
+Phase 5: The Circuit Breaker System (Building the state machine for CLOSED, OPEN, and HALF-OPEN recovery modes with the hardcoded safe streams).
+
+Phase 6: Optional Auth & Vault (Integrating the OAuth provider and RLS-protected database for bookmarks).
+
+Phase 7: Performance & NFR Optimization (Ensuring < 1.5s TTFS and bulletproofing memory management).
+
+3. Critical Risk Analysis:
+Identify the top 3 technical risks based on this specific PRD (e.g., browser memory leaks from headless players, CORS blocking, DOM crashes) and briefly state your strategy to mitigate them during development.
+
+Output constraint: End your response by asking me: "Are you ready to approve this tech stack and begin Phase 1?" Do not start writing application code until I give you the go-ahead.
+
+Also the name of the project is IDKstream so wherever diffrent name is mentioned change that, take your time and dont hallucinate and make sure to follow the instructions carefully and implement these features as asked, with that dont use diffrent library without asking.

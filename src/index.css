@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+/* ── IDKstream Design Tokens ─────────────────────────── */
+@theme {
+  --color-void: #0a0a0f;
+  --color-void-light: #12121a;
+  --color-void-lighter: #1a1a28;
+  --color-surface: #1e1e2e;
+  --color-surface-hover: #2a2a3e;
+  --color-border: #2e2e44;
+  --color-border-bright: #4a4a6a;
+
+  --color-signal-cyan: #00f0ff;
+  --color-signal-magenta: #ff00aa;
+  --color-signal-green: #00ff88;
+  --color-signal-amber: #ffaa00;
+  --color-signal-red: #ff3355;
+
+  --color-text-primary: #e8e8f0;
+  --color-text-secondary: #8888aa;
+  --color-text-muted: #555577;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ── Global Reset & Base ─────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-void);
+  color: var(--color-text-primary);
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Scrollbar Styling ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-bright);
+}
+
+/* ── Selection ───────────────────────────────────────── */
+::selection {
+  background: color-mix(in srgb, var(--color-signal-cyan) 30%, transparent);
+  color: var(--color-text-primary);
+}
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-signal-cyan) 20%, transparent),
+                0 0 40px color-mix(in srgb, var(--color-signal-cyan) 10%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 30px color-mix(in srgb, var(--color-signal-cyan) 40%, transparent),
+                0 0 60px color-mix(in srgb, var(--color-signal-cyan) 20%, transparent);
+  }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+@keyframes static-noise {
+  0% { background-position: 0 0; }
+  25% { background-position: -100px 50px; }
+  50% { background-position: 50px -100px; }
+  75% { background-position: -50px 100px; }
+  100% { background-position: 100px -50px; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Utility Classes ─────────────────────────────────── */
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-scanline {
+  animation: scanline 4s linear infinite;
+}
+
+.animate-flicker {
+  animation: flicker 6s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
+}
+
+/* ── Glassmorphic Card ───────────────────────────────── */
+.glass {
+  background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: 16px;
+}
+
+.glass-sm {
+  background: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid color-mix(in srgb, var(--color-border) 30%, transparent);
+  border-radius: 8px;
+}
+
+/* ── CRT Scanline Overlay ────────────────────────────── */
+.crt-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    color-mix(in srgb, black 8%, transparent) 2px,
+    color-mix(in srgb, black 8%, transparent) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Video Player ────────────────────────────────────── */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--color-void);
+  overflow: hidden;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: black;
+}
+
+/* ── Loading Spinner ─────────────────────────────────── */
+.loader-ring {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-signal-cyan);
+  border-radius: 50%;
+  animation: spin-slow 1s linear infinite;
+}
