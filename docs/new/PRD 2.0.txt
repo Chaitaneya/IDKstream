@@ -1,0 +1,79 @@
+Here is **PRD 2.0**, designed to be clear, actionable, and strictly focused on building the 3D game layer and CRT shaders on top of your existing, rock-solid streaming engine.
+
+---
+
+# **PRD 2.0: IDKstream – The 3D Geographic Stream Game**
+
+## **1. Project Objective**
+
+Transform the existing IDKstream live-video engine into an interactive geographic deduction game. The core streaming architecture (fetching, caching, and playing global streams via `iptv-org`) is already complete and functional. This phase focuses entirely on the frontend presentation layer: wrapping the player in a bare CRT shader and building a fully interactive 3D WebGL globe for gameplay.
+
+---
+
+## **2. UI/UX Architecture & Layout**
+
+### **A. The Interactive Space Globe (Background Viewport)**
+
+* **Environment:** The primary background of the application is a dark, cinematic space void.
+* **The Globe:** A 3D political globe (built via Three.js, React Three Fiber, or Spline) sits in the center/right of the screen, slowly auto-rotating.
+* **Interaction (Hover & Select):**
+* Requires mapping a GeoJSON file of world political borders onto the 3D sphere.
+* Using raycasting, when the user's cursor hovers over a specific country, its precise borders must illuminate/highlight instantly.
+* Clicking a country "locks" the selection, keeping the border highlighted and enabling the "Submit Guess" button.
+
+
+
+### **B. The CRT Streamer (Bottom-Left Overlay)**
+
+* **Positioning:** Pinned to the bottom-left corner floating above the space background.
+* **Aesthetic (Bare CRT):** No physical TV frames or heavy Deco borders. The video element must be stylized purely with CSS/WebGL shaders to look like a raw, exposed CRT monitor.
+* **Required Shader Effects:**
+* Slight screen curvature (barrel distortion).
+* Subtle horizontal scanlines.
+* Faint phosphor bleeding/glow.
+* Vignetting around the edges.
+
+
+
+---
+
+## **3. Game Logic & Scoring Mechanics**
+
+### **A. Data Security (Anti-Cheating)**
+
+* Because the underlying stream engine uses the stream's origin data to fetch and validate the feed, the frontend layer must aggressively scrub or hide this metadata from the DOM. Players must not be able to "Inspect Element" to find the country code.
+
+### **B. The Gameplay Loop**
+
+1. **Watch:** The existing engine serves a live stream.
+2. **Explore:** The player navigates the 3D globe to find the matching country.
+3. **Guess:** The player clicks a country (highlighting the border) and clicks a "Submit" UI element.
+4. **Reveal & Score:**
+* The game compares the guessed country against the hidden metadata.
+* A glowing 3D trajectory line is animated across the globe, connecting the centroid of the player's guessed country to the centroid of the actual target country.
+
+
+5. **Clunk:** The game automatically triggers the existing engine to load the next stream.
+
+### **C. The Haversine Scoring System**
+
+* Scoring is proximity-based, utilizing the Haversine formula to calculate the exact distance (in kilometers) between the guessed country's center coordinates and the actual country's center.
+* **Exact Match:** Bullseye (e.g., 5,000 points).
+* **Regional Match:** High partial points based on proximity (sliding scale based on km distance).
+* **Total Miss:** Zero points.
+
+---
+
+## **4. State Management & Out of Scope**
+
+### **A. User Accounts & Backend**
+
+* **In Scope:** Client-side tracking. Use the browser's `localStorage` to manage the session state, current score, round number, and personal high score.
+
+### **B. Engine Modifications**
+
+* **Out of Scope:** Modifying the pre-warming, headless validation, or circuit breaker mechanics of the existing stream engine. The new 3D UI must simply sit on top of the existing hooks/callbacks.
+
+---
+
+To finalize the visual feedback on the globe before passing this to a developer or generator, what color should the highlight be when a user hovers over a country, and what color should the trajectory line be during the reveal?

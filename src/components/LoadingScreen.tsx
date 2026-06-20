@@ -63,8 +63,7 @@ export function LoadingScreen() {
 
         {/* Tagline */}
         <p
-          className="text-sm tracking-widest text-text-secondary uppercase"
-          style={{ fontFamily: 'var(--font-mono)' }}
+          className="text-base tracking-widest text-signal-amber font-mono font-bold uppercase amber-glow"
         >
           Tuning into the unknown
         </p>
@@ -74,8 +73,7 @@ export function LoadingScreen() {
       <div className="relative z-10 flex flex-col items-center gap-4">
         <div className="loader-ring" />
         <p
-          className="text-xs tracking-wider text-text-muted"
-          style={{ fontFamily: 'var(--font-mono)' }}
+          className="text-sm tracking-wider text-text-primary font-mono"
         >
           Loading global channel database...
         </p>
