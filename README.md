@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="./public/tv-globe-logo.png" alt="IDKstream Logo" width="250" />
-  
   # IDKstream
+  
+  <img src="./public/tv-globe-logo.png" alt="IDKstream Logo" width="250" />
   
   **An anti-algorithmic, retro-futuristic live TV surfing platform and 3D geographic deduction game.**
 </div>
