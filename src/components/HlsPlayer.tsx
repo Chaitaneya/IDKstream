@@ -178,24 +178,32 @@ export function HlsPlayer({ stream }: HlsPlayerProps) {
         className="w-full h-full object-fill"
       />
 
-      {/* Retro On-Screen Display (OSD) Overlay */}
+      {/* Retro On-Screen Display (OSD) Overlay — CRT Green Phosphor Style */}
       <div
-        className={`absolute top-6 left-6 font-mono z-30 transition-opacity duration-700 flex flex-col gap-1.5 pointer-events-none p-4 rounded-xl bg-black/65 border border-white/5 shadow-2xl backdrop-blur-xs select-none ${
-          showOsd ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`absolute top-4 left-4 z-30 transition-opacity duration-700 flex flex-col gap-1 pointer-events-none select-none`}
+        style={{
+          fontFamily: "'VT323', monospace",
+          padding: '8px 12px',
+          background: 'rgba(5, 50, 30, 0.6)',
+          border: '1px solid rgba(91, 248, 112, 0.15)',
+          borderRadius: 6,
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
+          opacity: showOsd ? 1 : 0,
+        }}
       >
-        <div className="flex items-center gap-2 font-bold text-xs green-glow">
-          <span className="w-2.5 h-2.5 rounded-full bg-signal-green animate-pulse" />
+        <div className="crt-text-glow" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#5bf870', display: 'inline-block', boxShadow: '0 0 4px #5bf870', animation: 'pulse 2s infinite' }} />
           <span>RECEIVING LIVE SIGNAL</span>
         </div>
-        <div className="text-text-primary text-base font-bold tracking-wide mt-1 uppercase green-glow max-w-[280px] truncate">
+        <div className="crt-text-glow" style={{ fontSize: 'clamp(16px, 1.8vw, 22px)', fontWeight: 'bold', letterSpacing: '0.05em', marginTop: 2, maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {stream.name}
         </div>
-        <div className="text-xs text-text-primary uppercase font-bold tracking-wide">
+        <div className="crt-text-glow" style={{ fontSize: 12, letterSpacing: '0.1em', opacity: 0.8 }}>
           ORIGIN: {stream.country || 'GLOBAL'}
         </div>
         {stream.categories && stream.categories.length > 0 && (
-          <div className="text-xs text-text-secondary uppercase">
+          <div style={{ fontSize: 11, color: 'rgba(91, 248, 112, 0.6)', fontFamily: "'VT323', monospace", textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             GENRE: {stream.categories.join(' / ')}
           </div>
         )}

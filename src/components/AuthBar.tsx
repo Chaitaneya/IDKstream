@@ -1,5 +1,9 @@
 /**
- * IDKstream — Auth Bar & Vault Drawer (Dark Deco Theme)
+ * IDKstream — Auth Bar & Vault Drawer (Phosphor Terminal Theme)
+ *
+ * Replaces the old Dark Deco theme with a retro CRT terminal aesthetic,
+ * matching the main TV frame UI. Pure blacks, dark greens, and glowing
+ * phosphor text.
  */
 
 import { useState } from 'react';
@@ -18,7 +22,6 @@ export function AuthBar() {
   const setCurrentStream = useIDKStreamStore((s) => s.setCurrentStream);
   const createPlaylist = useIDKStreamStore((s) => s.createPlaylist);
   const deletePlaylist = useIDKStreamStore((s) => s.deletePlaylist);
-  const sharePlaylist = useIDKStreamStore((s) => s.sharePlaylist);
 
   // Local UI States
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -27,7 +30,6 @@ export function AuthBar() {
   const [activeTab, setActiveTab] = useState<VaultTab>('bookmarks');
   const [showNewPlaylist, setShowNewPlaylist] = useState(false);
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('');
-  const [copiedShareCode, setCopiedShareCode] = useState<string | null>(null);
 
   const handleSignIn = async () => {
     setAuthenticating(true);
@@ -51,54 +53,39 @@ export function AuthBar() {
     setShowNewPlaylist(false);
   };
 
-  const handleShare = async (playlistId: string) => {
-    const code = await sharePlaylist(playlistId);
-    if (code) {
-      const shareUrl = `${window.location.origin}?playlist=${code}`;
-      await navigator.clipboard.writeText(shareUrl);
-      setCopiedShareCode(playlistId);
-      setTimeout(() => setCopiedShareCode(null), 3000);
-    }
-  };
-
   return (
     <>
       {/* ── Top-Right Auth Panel ───────────────────────── */}
-      <div className="absolute top-4 right-4 z-45 flex items-center gap-3">
+      <div className="absolute top-6 right-6 z-45 flex items-center gap-4" style={{ fontFamily: "'VT323', monospace" }}>
         {authenticating ? (
-          <div className="glass-sm px-4 py-2.5 flex items-center gap-2 text-sm text-signal-cyan font-mono animate-pulse border border-signal-cyan/20">
-            <div className="w-3.5 h-3.5 border-2 border-signal-cyan border-t-transparent rounded-full animate-spin" />
-            <span>CONNECTING WAVE...</span>
+          <div className="px-4 py-2 flex items-center gap-2 text-sm crt-text-glow border border-[#5bf870]/30 bg-black/60 backdrop-blur-sm">
+            <span className="animate-pulse">CONNECTING...</span>
+            <span className="w-2 h-4 bg-[#5bf870] animate-[boot-cursor-blink_1s_step-end_infinite]" />
           </div>
         ) : !user ? (
-          /* Sign In Button (Mechanical Brass) */
+          /* Sign In Button (Terminal Style) */
           <button
             onClick={handleSignIn}
-            className="cursor-pointer px-4 py-2.5 bg-[#1a120c] border border-brass-dark hover:border-brass rounded font-mono text-sm font-bold text-signal-amber hover:text-brass-light hover:scale-[1.02] active:translate-y-0.5 transition-all flex items-center gap-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),_0_3px_6px_rgba(0,0,0,0.6)]"
-            style={{ textShadow: '0 0 2px rgba(255, 157, 0, 0.6)' }}
+            className="cursor-pointer px-4 py-2 border border-[#5bf870]/40 bg-[#021008]/80 hover:bg-[#5bf870]/10 text-[#5bf870] text-sm uppercase tracking-widest transition-colors backdrop-blur-sm flex items-center gap-2 crt-text-glow group"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="var(--color-brass-light)"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="var(--color-brass)"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="var(--color-brass-dark)"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="var(--color-brass-light)"/>
-            </svg>
-            <span>SIGN IN WITH GOOGLE</span>
+            <span className="opacity-50 group-hover:opacity-100 transition-opacity">{'>'}</span>
+            SIGN IN WITH GOOGLE
           </button>
         ) : (
           /* Logged In Controls */
           <div className="flex items-center gap-3">
-            {/* Bookmark Folder Switch */}
+            {/* Bookmark Folder Switch (Terminal Style) */}
             <button
               onClick={() => setIsDrawerOpen(true)}
-              className="cursor-pointer p-2.5 bg-[#1a120c] border border-brass-dark hover:border-brass rounded text-signal-amber hover:text-brass-light hover:scale-[1.02] active:translate-y-0.5 transition-all relative flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),_0_2px_4px_rgba(0,0,0,0.6)]"
+              className="cursor-pointer px-4 py-2 border border-[#5bf870]/40 bg-[#021008]/80 hover:bg-[#5bf870]/10 text-[#5bf870] text-sm uppercase tracking-widest transition-colors backdrop-blur-sm flex items-center gap-2 crt-text-glow group"
               title="Open DVR Vault"
             >
-              <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-              </svg>
+              <span className="opacity-50 group-hover:opacity-100 transition-opacity">{'['}</span>
+              VAULT
+              <span className="opacity-50 group-hover:opacity-100 transition-opacity">{']'}</span>
+              
               {(bookmarks.length + playlists.length) > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 w-5.5 h-5.5 rounded-full bg-signal-amber text-[10px] font-black font-mono text-black flex items-center justify-center shadow-md animate-pulse">
+                <span className="ml-2 text-xs bg-[#5bf870] text-black px-1.5 py-0.5 rounded-sm font-bold animate-pulse">
                   {bookmarks.length + playlists.length}
                 </span>
               )}
@@ -108,32 +95,33 @@ export function AuthBar() {
             <div className="relative">
               <button
                 onClick={() => setShowUserDropdown((prev) => !prev)}
-                className="cursor-pointer flex items-center rounded-full border border-brass-dark bg-[#1a120c] hover:border-brass hover:scale-[1.02] active:translate-y-0.5 transition-all p-0.5 shadow-md"
+                className="cursor-pointer flex items-center border border-[#5bf870]/40 bg-[#021008]/80 hover:border-[#5bf870] transition-colors p-1 backdrop-blur-sm"
               >
                 <img
                   src={user.avatarUrl}
                   alt={user.name}
-                  className="w-8 h-8 rounded-full pointer-events-none"
+                  className="w-8 h-8 pointer-events-none grayscale sepia opacity-80"
+                  style={{ filter: 'sepia(1) hue-rotate(80deg) saturate(3)' }}
                   referrerPolicy="no-referrer"
                 />
               </button>
 
               {showUserDropdown && (
-                <div className="absolute right-0 mt-2 w-52 bg-[#1a120c] border border-brass shadow-2xl p-4 z-50 flex flex-col gap-2 rounded-lg font-mono">
-                  <div className="flex flex-col gap-1 pb-1">
-                    <p className="text-[9px] text-text-muted uppercase font-bold tracking-wider">Signed In As</p>
-                    <p className="text-sm font-bold text-signal-amber truncate select-none leading-none">{user.name}</p>
-                    <p className="text-[10px] text-text-secondary truncate select-none leading-none mt-1">{user.email}</p>
+                <div className="absolute right-0 mt-3 w-56 bg-black border border-[#5bf870]/50 shadow-[0_0_15px_rgba(91,248,112,0.15)] p-4 z-50 flex flex-col gap-2 font-mono">
+                  <div className="flex flex-col gap-1 pb-2">
+                    <p className="text-[10px] text-[#5bf870]/60 uppercase tracking-widest">USER_SESSION_ACTIVE</p>
+                    <p className="text-base text-[#5bf870] truncate select-none leading-none crt-text-glow">{user.name}</p>
+                    <p className="text-xs text-[#5bf870]/70 truncate select-none mt-1">{user.email}</p>
                   </div>
-                  <hr className="border-brass-tarnished/40 my-1" />
+                  <div className="h-px bg-[#5bf870]/20 my-1 w-full" />
                   <button
                     onClick={() => {
                       logout();
                       setShowUserDropdown(false);
                     }}
-                    className="cursor-pointer text-left px-3 py-2 text-xs font-bold rounded text-signal-red bg-[#0d0705] border border-signal-red/20 hover:border-signal-red hover:bg-signal-red/10 transition-all flex items-center justify-center gap-2 active:translate-y-0.5"
+                    className="cursor-pointer text-left px-3 py-2 text-sm uppercase tracking-widest text-[#ff3333] bg-black border border-[#ff3333]/30 hover:bg-[#ff3333]/10 hover:border-[#ff3333] transition-colors flex items-center gap-2 mt-1"
                   >
-                    🚪 Sign Out
+                    <span className="opacity-70">x</span> TERMINATE SESSION
                   </button>
                 </div>
               )}
@@ -145,93 +133,92 @@ export function AuthBar() {
       {/* ── Slide-Out Vault Drawer ──────────────────────── */}
       {isDrawerOpen && (
         <div
-          className="fixed inset-0 bg-black/75 backdrop-blur-xs z-50 transition-opacity"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 transition-opacity"
           onClick={() => setIsDrawerOpen(false)}
         />
       )}
 
       <div
-        className={`fixed top-0 right-0 h-full w-85 bg-[#1a120c] border-l-4 border-brass-dark z-50 shadow-2xl flex flex-col transition-transform duration-300 transform font-mono ${
+        className={`fixed top-0 right-0 h-full w-96 bg-[#020804] border-l border-[#5bf870]/40 z-50 shadow-[-10px_0_30px_rgba(0,0,0,0.8)] flex flex-col transition-transform duration-300 transform font-mono ${
           isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{ fontFamily: "'VT323', monospace" }}
       >
+        {/* Decorative CRT scanlines over the drawer */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] z-10" />
+
         {/* Drawer Header */}
-        <div className="p-5 border-b border-brass-tarnished/60 bg-[#130b07] flex items-center justify-between">
+        <div className="p-6 border-b border-[#5bf870]/30 bg-black flex items-center justify-between relative z-20">
           <div className="flex flex-col">
-            <h2 className="text-base font-bold text-signal-amber uppercase tracking-wider flex items-center gap-1.5 amber-glow">
-              <span>📼</span> VAULT // DVR
+            <h2 className="text-xl text-[#5bf870] uppercase tracking-widest flex items-center gap-2 crt-text-glow">
+              <span className="animate-pulse">_</span> VAULT.SYS
             </h2>
             {user && (
-              <span className="text-[10px] text-text-secondary mt-1 truncate max-w-[220px]">
-                USER: {user.email}
+              <span className="text-[12px] text-[#5bf870]/60 mt-1 truncate max-w-[220px]">
+                USR_ID: {user.email}
               </span>
             )}
           </div>
           <button
             onClick={() => setIsDrawerOpen(false)}
-            className="cursor-pointer text-brass hover:text-brass-light transition-all text-xl font-bold font-mono"
+            className="cursor-pointer text-[#5bf870]/60 hover:text-[#5bf870] hover:bg-[#5bf870]/10 px-2 py-1 border border-transparent hover:border-[#5bf870]/40 transition-all text-sm font-bold uppercase tracking-widest"
           >
-            ✕
+            [ESC]
           </button>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex border-b border-brass-tarnished/40 bg-[#0f0906]">
+        <div className="flex border-b border-[#5bf870]/30 bg-[#010a05] relative z-20">
           <button
             onClick={() => setActiveTab('bookmarks')}
-            className={`flex-1 py-3 text-xs uppercase tracking-widest font-bold cursor-pointer transition-all ${
+            className={`flex-1 py-3 text-sm uppercase tracking-widest cursor-pointer transition-colors border-r border-[#5bf870]/20 ${
               activeTab === 'bookmarks'
-                ? 'text-signal-amber border-b-2 border-signal-amber bg-[#1a120c]/40 font-black'
-                : 'text-brass-dark hover:text-brass'
+                ? 'text-[#5bf870] bg-[#5bf870]/10 font-bold crt-text-glow shadow-[inset_0_-2px_0_#5bf870]'
+                : 'text-[#5bf870]/50 hover:text-[#5bf870]/80 hover:bg-[#5bf870]/5'
             }`}
           >
-            ★ Bookmarks ({bookmarks.length})
+            BOOKMARKS [{bookmarks.length}]
           </button>
           <button
             onClick={() => setActiveTab('playlists')}
-            className={`flex-1 py-3 text-xs uppercase tracking-widest font-bold cursor-pointer transition-all ${
+            className={`flex-1 py-3 text-sm uppercase tracking-widest cursor-pointer transition-colors ${
               activeTab === 'playlists'
-                ? 'text-signal-amber border-b-2 border-signal-amber bg-[#1a120c]/40 font-black'
-                : 'text-brass-dark hover:text-brass'
+                ? 'text-[#5bf870] bg-[#5bf870]/10 font-bold crt-text-glow shadow-[inset_0_-2px_0_#5bf870]'
+                : 'text-[#5bf870]/50 hover:text-[#5bf870]/80 hover:bg-[#5bf870]/5'
             }`}
           >
-            📋 Playlists ({playlists.length})
+            PLAYLISTS [{playlists.length}]
           </button>
         </div>
 
         {/* Tab Content */}
-        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 bg-[#150e0a]">
+        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 bg-[#010804] relative z-20">
           {activeTab === 'bookmarks' ? (
             /* ── Bookmarks Tab ─────────────────────────── */
             bookmarks.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center text-center opacity-40 py-16 gap-3 select-none">
-                <span className="text-4xl">📻</span>
-                <p className="text-sm uppercase tracking-widest font-bold">No Saved Signals</p>
-                <p className="text-xs text-text-secondary mt-1">
-                  save a wave using the Star button on the control console while surfing.
-                </p>
+              <div className="flex-1 flex flex-col items-center justify-center text-center py-16 gap-3 select-none">
+                <span className="text-[#5bf870]/30 text-4xl mb-2">{'< NULL >'}</span>
+                <p className="text-sm uppercase tracking-widest text-[#5bf870]/50">NO SIGNALS SAVED</p>
               </div>
             ) : (
               bookmarks.map((stream) => (
                 <div
                   key={stream.id}
-                  className="group relative bg-[#0f0a05] border border-brass-tarnished/30 hover:border-brass p-4 rounded-md transition-all flex items-center justify-between gap-4 overflow-hidden cursor-pointer shadow-sm"
+                  className="group relative bg-black border border-[#5bf870]/20 hover:border-[#5bf870]/80 hover:bg-[#5bf870]/5 p-4 transition-all flex items-center justify-between gap-4 cursor-pointer"
                   onClick={() => handleSelectBookmark(stream)}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-brass/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-
-                  <div className="flex-1 min-w-0 flex flex-col z-10 pointer-events-none">
-                    <span className="text-sm font-bold text-text-primary group-hover:text-signal-amber transition-colors truncate uppercase leading-tight">
+                  <div className="flex-1 min-w-0 flex flex-col">
+                    <span className="text-base text-[#5bf870]/90 group-hover:text-[#5bf870] transition-colors truncate uppercase leading-tight group-hover:crt-text-glow">
                       {stream.name}
                     </span>
-                    <span className="text-[10px] text-text-secondary uppercase mt-1.5 leading-none tracking-wide">
-                      LOC: {stream.country || 'GLOB'} // GENRE: {stream.categories?.[0] || 'GEN'}
+                    <span className="text-[11px] text-[#5bf870]/50 uppercase mt-1 tracking-widest">
+                      LOC:{stream.country || 'GLOB'} | GENRE:{stream.categories?.[0] || 'GEN'}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 z-10">
-                    <span className="text-text-muted group-hover:text-signal-amber transition-colors text-xs pointer-events-none pr-1">
-                      ▶
+                  <div className="flex items-center gap-3">
+                    <span className="text-[#5bf870]/30 group-hover:text-[#5bf870]/80 transition-colors text-xs pointer-events-none">
+                      [PLAY]
                     </span>
 
                     <button
@@ -239,12 +226,10 @@ export function AuthBar() {
                         e.stopPropagation();
                         toggleBookmark(stream);
                       }}
-                      className="cursor-pointer p-1.5 text-text-muted hover:text-signal-red hover:bg-[#0d0705] rounded border border-transparent hover:border-signal-red/20 transition-all"
+                      className="cursor-pointer px-2 py-1 text-[#5bf870]/40 hover:text-[#ff3333] border border-transparent hover:border-[#ff3333]/40 hover:bg-[#ff3333]/10 transition-all text-xs uppercase"
                       title="Delete Bookmark"
                     >
-                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
+                      DEL
                     </button>
                   </div>
                 </div>
@@ -256,96 +241,82 @@ export function AuthBar() {
               {!showNewPlaylist ? (
                 <button
                   onClick={() => setShowNewPlaylist(true)}
-                  className="cursor-pointer py-3 px-4 bg-[#1a120c] border border-brass-dark hover:border-brass text-xs font-bold text-signal-amber hover:text-brass-light transition-all rounded flex items-center justify-center gap-2 uppercase tracking-wider shadow-sm active:translate-y-0.5"
+                  className="cursor-pointer py-3 px-4 bg-black border border-[#5bf870]/40 hover:bg-[#5bf870]/10 text-sm text-[#5bf870] transition-all flex items-center justify-center gap-2 uppercase tracking-widest crt-text-glow"
                 >
-                  ＋ Create Playlist
+                  + INIT_NEW_SEQUENCE
                 </button>
               ) : (
-                <div className="bg-[#0f0a05] border border-brass p-4 rounded-md flex flex-col gap-3 shadow-inner">
-                  <input
-                    type="text"
-                    value={newPlaylistTitle}
-                    onChange={(e) => setNewPlaylistTitle(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleCreatePlaylist()}
-                    placeholder="Enter playlist title..."
-                    autoFocus
-                    className="w-full bg-[#150e0a] border border-brass-tarnished/60 rounded px-3 py-2 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brass transition-colors font-mono"
-                  />
-                  <p className="text-[10px] text-text-secondary leading-normal">
-                    Note: This playlist will import your current saved bookmarks ({bookmarks.length}).
+                <div className="bg-black border border-[#5bf870]/60 p-4 flex flex-col gap-3 shadow-[0_0_10px_rgba(91,248,112,0.1)]">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#5bf870] animate-pulse">{'>'}</span>
+                    <input
+                      type="text"
+                      value={newPlaylistTitle}
+                      onChange={(e) => setNewPlaylistTitle(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleCreatePlaylist()}
+                      placeholder="SEQ_NAME"
+                      autoFocus
+                      className="w-full bg-transparent border-none text-base text-[#5bf870] placeholder:text-[#5bf870]/30 outline-none font-mono uppercase"
+                    />
+                  </div>
+                  <div className="h-px bg-[#5bf870]/20 w-full" />
+                  <p className="text-[11px] text-[#5bf870]/50 tracking-widest">
+                    IMPORTING {bookmarks.length} BOOKMARKS...
                   </p>
-                  <div className="flex gap-2.5">
+                  <div className="flex gap-3 mt-1">
                     <button
                       onClick={handleCreatePlaylist}
                       disabled={!newPlaylistTitle.trim()}
-                      className="cursor-pointer flex-1 py-2 text-xs font-bold uppercase bg-brass/25 border border-brass text-brass hover:bg-brass/35 rounded transition-all disabled:opacity-30 disabled:cursor-not-allowed active:translate-y-0.5"
+                      className="cursor-pointer flex-1 py-2 text-xs uppercase bg-[#5bf870]/20 border border-[#5bf870] text-[#5bf870] hover:bg-[#5bf870]/40 transition-all disabled:opacity-30 disabled:cursor-not-allowed tracking-widest"
                     >
-                      Create
+                      EXECUTE
                     </button>
                     <button
                       onClick={() => { setShowNewPlaylist(false); setNewPlaylistTitle(''); }}
-                      className="cursor-pointer flex-1 py-2 text-xs font-bold uppercase text-text-muted hover:text-text-primary transition-colors"
+                      className="cursor-pointer px-4 py-2 text-xs uppercase text-[#5bf870]/60 border border-[#5bf870]/30 hover:bg-[#5bf870]/10 hover:text-[#5bf870] transition-colors tracking-widest"
                     >
-                      Cancel
+                      ABORT
                     </button>
                   </div>
                 </div>
               )}
 
               {playlists.length === 0 && !showNewPlaylist ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-40 py-16 gap-3 select-none">
-                  <span className="text-4xl">📼</span>
-                  <p className="text-sm uppercase tracking-widest font-bold">No Playlists Yet</p>
-                  <p className="text-xs text-text-secondary mt-1">
-                    create a play loop sequence using bookmarks.
-                  </p>
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-16 gap-3 select-none">
+                  <span className="text-[#5bf870]/30 text-4xl mb-2">{'[ 0 ]'}</span>
+                  <p className="text-sm uppercase tracking-widest text-[#5bf870]/50">NO SEQUENCES FOUND</p>
                 </div>
               ) : (
                 playlists.map((playlist) => (
                   <div
                     key={playlist.id}
-                    className="group bg-[#0f0a05] border border-brass-tarnished/30 hover:border-brass p-4 rounded-md flex flex-col gap-2.5 transition-all shadow-sm"
+                    className="group bg-black border border-[#5bf870]/20 hover:border-[#5bf870]/60 p-4 flex flex-col gap-3 transition-all"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between border-b border-[#5bf870]/20 pb-2">
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm font-bold text-text-primary uppercase truncate block leading-tight">
+                        <span className="text-base text-[#5bf870] uppercase truncate block leading-tight font-bold">
                           {playlist.title}
                         </span>
-                        <span className="text-[10px] text-text-secondary">
-                          STREAMS: {playlist.streams.length}
+                        <span className="text-[11px] text-[#5bf870]/50 tracking-widest">
+                          ITEMS: {playlist.streams.length}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={() => handleShare(playlist.id)}
-                          className="cursor-pointer p-1.5 text-text-muted hover:text-signal-amber transition-colors relative"
-                          title={playlist.share_code ? 'Copy share link' : 'Generate share link'}
-                        >
-                          {copiedShareCode === playlist.id ? (
-                            <span className="text-signal-green text-[9px] font-bold">✓ COPIED</span>
-                          ) : (
-                            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
-                            </svg>
-                          )}
-                        </button>
+                      <div className="flex items-center gap-2">
 
                         <button
                           onClick={() => deletePlaylist(playlist.id)}
-                          className="cursor-pointer p-1.5 text-text-muted hover:text-signal-red transition-colors"
+                          className="cursor-pointer px-2 py-1 text-[#ff3333]/60 border border-[#ff3333]/30 hover:text-[#ff3333] hover:border-[#ff3333]/60 hover:bg-[#ff3333]/10 transition-colors text-xs uppercase tracking-widest"
                           title="Delete Playlist"
                         >
-                          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
+                          DEL
                         </button>
                       </div>
                     </div>
 
                     {/* Stream preview list */}
                     {playlist.streams.length > 0 && (
-                      <div className="flex flex-col gap-1.5 mt-1 border-t border-brass-tarnished/10 pt-2.5">
+                      <div className="flex flex-col gap-1">
                         {playlist.streams.slice(0, 3).map((stream) => (
                           <button
                             key={stream.id}
@@ -353,26 +324,17 @@ export function AuthBar() {
                               setCurrentStream(stream);
                               setIsDrawerOpen(false);
                             }}
-                            className="cursor-pointer text-left text-[11px] text-text-secondary hover:text-signal-amber transition-colors truncate flex items-center gap-1.5 py-0.5"
+                            className="cursor-pointer text-left text-[12px] text-[#5bf870]/60 hover:text-[#5bf870] hover:bg-[#5bf870]/10 transition-colors truncate flex items-center gap-2 py-1 px-1"
                           >
-                            <span className="text-[9px] text-brass-dark">▶</span>
+                            <span className="text-[10px] text-[#5bf870]/40">{'>'}</span>
                             {stream.name}
                           </button>
                         ))}
                         {playlist.streams.length > 3 && (
-                          <span className="text-[10px] text-text-muted pl-3.5">
-                            +{playlist.streams.length - 3} MORE STREAMS
+                          <span className="text-[11px] text-[#5bf870]/40 pl-4 mt-1 tracking-widest">
+                            ...AND {playlist.streams.length - 3} MORE
                           </span>
                         )}
-                      </div>
-                    )}
-
-                    {playlist.share_code && (
-                      <div className="flex items-center gap-1.5 mt-1 pt-1.5 border-t border-brass-tarnished/10">
-                        <span className="text-[9px] text-signal-green">●</span>
-                        <span className="text-[9px] text-text-muted truncate uppercase tracking-wider">
-                          Public link active
-                        </span>
                       </div>
                     )}
                   </div>
@@ -383,15 +345,15 @@ export function AuthBar() {
         </div>
 
         {/* Drawer Footer */}
-        <div className="p-5 border-t border-brass-tarnished/60 bg-[#130b07]">
+        <div className="p-6 border-t border-[#5bf870]/30 bg-black relative z-20">
           <button
             onClick={() => {
               logout();
               setIsDrawerOpen(false);
             }}
-            className="w-full cursor-pointer py-2.5 bg-[#0d0705] border border-signal-red/30 hover:border-signal-red text-signal-red hover:bg-signal-red/10 text-xs font-bold text-center transition-all uppercase rounded active:translate-y-0.5"
+            className="w-full cursor-pointer py-3 bg-[#0a0202] border border-[#ff3333]/40 hover:bg-[#ff3333]/10 hover:border-[#ff3333] text-[#ff3333] text-sm tracking-widest text-center transition-all uppercase flex justify-center items-center gap-2"
           >
-            🚪 Sign Out // Disconnect
+            <span className="opacity-70">[X]</span> DISCONNECT
           </button>
         </div>
       </div>

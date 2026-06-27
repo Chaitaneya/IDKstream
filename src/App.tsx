@@ -14,7 +14,6 @@ import { initTelemetry } from './services/telemetryService';
 import { loadBlocklist } from './services/corsBlocklist';
 import { startPreWarmingLoop, stopPreWarmingLoop } from './services/validationService';
 import { onAuthStateChange, extractUserProfile, getSession } from './services/authService';
-import { fetchPlaylistByShareCode } from './services/playlistService';
 
 export default function App() {
   const isDataLoaded = useIDKStreamStore((s) => s.isDataLoaded);
@@ -92,25 +91,7 @@ export default function App() {
     return unsubscribe;
   }, [setUser, syncBookmarks, syncPlaylists, setBookmarks, setPlaylists]);
 
-  // ── Playlist sharing URL routing ──────────────────────
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const playlistCode = params.get('playlist');
-    if (playlistCode) {
-      fetchPlaylistByShareCode(playlistCode).then((playlist) => {
-        if (playlist) {
-          console.log('[IDKstream] Loaded shared playlist:', playlist);
-          useIDKStreamStore.getState().setSharedPlaylist(playlist);
-        } else {
-          console.error('[IDKstream] Shared playlist not found or private');
-          // Clean up invalid query param
-          const url = new URL(window.location.href);
-          url.searchParams.delete('playlist');
-          window.history.replaceState({}, '', url.toString());
-        }
-      });
-    }
-  }, []);
+
 
   // Error state
   if (dataError) {

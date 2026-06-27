@@ -17,7 +17,6 @@ import {
   fetchUserPlaylists,
   createPlaylist as createPlaylistAPI,
   deletePlaylist as deletePlaylistAPI,
-  generateShareCode,
 } from '../services/playlistService';
 
 export const SAFE_STREAMS: IPTVChannel[] = [
@@ -99,7 +98,6 @@ export const useIDKStreamStore = create<IDKStreamState>((set, get) => ({
 
   // ── Playlists ───────────────────────────────────────
   playlists: [],
-  sharedPlaylist: null,
 
   // ── Actions ─────────────────────────────────────────
   setChannels: (channels: IPTVChannel[]) =>
@@ -225,13 +223,12 @@ export const useIDKStreamStore = create<IDKStreamState>((set, get) => ({
   },
 
   playNextRandomStream: () => {
-    const { popFromQueue, channels, sharedPlaylist } = get();
+    const { popFromQueue, channels } = get();
     let nextStream = popFromQueue();
     if (!nextStream) {
-      const pool = sharedPlaylist ? sharedPlaylist.streams : channels;
-      if (pool.length > 0) {
-        const randomIndex = Math.floor(Math.random() * pool.length);
-        nextStream = pool[randomIndex];
+      if (channels.length > 0) {
+        const randomIndex = Math.floor(Math.random() * channels.length);
+        nextStream = channels[randomIndex];
       }
     }
     set({ currentStream: nextStream, isPlaying: nextStream !== null, isSurfing: true });
@@ -321,31 +318,5 @@ export const useIDKStreamStore = create<IDKStreamState>((set, get) => ({
     }
   },
 
-  sharePlaylist: async (id: string) => {
-    const code = await generateShareCode(id);
-    if (code) {
-      // Update the playlist in state with the new share code
-      const { playlists } = get();
-      set({
-        playlists: playlists.map((p) =>
-          p.id === id ? { ...p, share_code: code, is_public: true } : p
-        ),
-      });
-    }
-    return code;
-  },
 
-  setSharedPlaylist: (playlist: Playlist | null) => {
-    set({
-      sharedPlaylist: playlist,
-      validatedQueue: [],
-      queueSize: 0,
-      isSurfing: false,
-    });
-
-    if (playlist && playlist.streams.length > 0) {
-      // Start with the first stream of the playlist
-      set({ currentStream: playlist.streams[0], isPlaying: true });
-    }
-  },
 }));

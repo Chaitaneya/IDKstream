@@ -79,53 +79,6 @@ export async function deletePlaylist(id: string): Promise<boolean> {
   return true;
 }
 
-/**
- * Generates a unique share code for a playlist, makes it public,
- * and returns the share code.
- */
-export async function generateShareCode(playlistId: string): Promise<string | null> {
-  if (!isSupabaseConfigured()) return null;
-
-  const shareCode = nanoid(8); // 8-character URL-safe code
-
-  const { error } = await supabase
-    .from('playlists')
-    .update({
-      share_code: shareCode,
-      is_public: true,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', playlistId);
-
-  if (error) {
-    console.error('[IDKstream] Playlists: share failed:', error.message);
-    return null;
-  }
-
-  return shareCode;
-}
-
-/**
- * Fetches a public playlist by its share code.
- * Works even for unauthenticated users (RLS policy allows reading public playlists).
- */
-export async function fetchPlaylistByShareCode(code: string): Promise<Playlist | null> {
-  if (!isSupabaseConfigured()) return null;
-
-  const { data, error } = await supabase
-    .from('playlists')
-    .select('*')
-    .eq('share_code', code)
-    .eq('is_public', true)
-    .single();
-
-  if (error) {
-    console.error('[IDKstream] Playlists: shared fetch failed:', error.message);
-    return null;
-  }
-
-  return data ? mapRowToPlaylist(data) : null;
-}
 
 /**
  * Adds a stream to an existing playlist.
