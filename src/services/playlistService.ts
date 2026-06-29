@@ -123,6 +123,66 @@ export async function addStreamToPlaylist(
   return true;
 }
 
+/**
+ * Shares a playlist by setting is_public = true and generating a unique share_code.
+ * Returns the share_code, or null on failure.
+ */
+export async function sharePlaylist(id: string): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  // First check if it already has a share_code
+  const { data: current, error: fetchErr } = await supabase
+    .from('playlists')
+    .select('share_code, is_public')
+    .eq('id', id)
+    .single();
+
+  if (fetchErr || !current) return null;
+
+  if (current.is_public && current.share_code) {
+    return current.share_code;
+  }
+
+  const shareCode = nanoid(10); // generate 10-char share code
+
+  const { error } = await supabase
+    .from('playlists')
+    .update({
+      is_public: true,
+      share_code: shareCode,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[IDKstream] Playlists: share failed:', error.message);
+    return null;
+  }
+
+  return shareCode;
+}
+
+/**
+ * Fetches a public playlist by its share code.
+ */
+export async function fetchPlaylistByShareCode(shareCode: string): Promise<Playlist | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  const { data, error } = await supabase
+    .from('playlists')
+    .select('*')
+    .eq('share_code', shareCode)
+    .eq('is_public', true)
+    .single();
+
+  if (error) {
+    console.error('[IDKstream] Playlists: fetch by share code failed:', error.message);
+    return null;
+  }
+
+  return mapRowToPlaylist(data);
+}
+
 // ── Helpers ──────────────────────────────────────────
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

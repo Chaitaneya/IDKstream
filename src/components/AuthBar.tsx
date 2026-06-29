@@ -22,6 +22,7 @@ export function AuthBar() {
   const setCurrentStream = useIDKStreamStore((s) => s.setCurrentStream);
   const createPlaylist = useIDKStreamStore((s) => s.createPlaylist);
   const deletePlaylist = useIDKStreamStore((s) => s.deletePlaylist);
+  const sharePlaylist = useIDKStreamStore((s) => s.sharePlaylist);
 
   // Local UI States
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -303,6 +304,45 @@ export function AuthBar() {
                       </div>
 
                       <div className="flex items-center gap-2">
+                        <button
+                          onClick={async (e) => {
+                            const btn = e.currentTarget;
+                            btn.innerText = 'SHARING...';
+                            btn.disabled = true;
+                            try {
+                              const shareCode = await sharePlaylist(playlist.id);
+                              if (shareCode) {
+                                const shareUrl = `${window.location.origin}/?playlist=${shareCode}`;
+                                await navigator.clipboard.writeText(shareUrl);
+                                btn.innerText = 'COPIED!';
+                                btn.style.borderColor = '#5bf870';
+                                btn.style.color = '#5bf870';
+                                setTimeout(() => {
+                                  btn.innerText = playlist.is_public ? 'LINK' : 'SHARE';
+                                  btn.style.borderColor = '';
+                                  btn.style.color = '';
+                                  btn.disabled = false;
+                                }, 2000);
+                              } else {
+                                btn.innerText = 'ERR';
+                                setTimeout(() => {
+                                  btn.innerText = playlist.is_public ? 'LINK' : 'SHARE';
+                                  btn.disabled = false;
+                                }, 2000);
+                              }
+                            } catch {
+                              btn.innerText = 'ERR';
+                              setTimeout(() => {
+                                btn.innerText = playlist.is_public ? 'LINK' : 'SHARE';
+                                btn.disabled = false;
+                              }, 2000);
+                            }
+                          }}
+                          className="cursor-pointer px-2 py-1 text-[#5bf870]/60 border border-[#5bf870]/30 hover:text-[#5bf870] hover:border-[#5bf870]/60 hover:bg-[#5bf870]/10 transition-all text-xs uppercase tracking-widest"
+                          title="Share Playlist"
+                        >
+                          {playlist.is_public ? 'LINK' : 'SHARE'}
+                        </button>
 
                         <button
                           onClick={() => deletePlaylist(playlist.id)}

@@ -14,6 +14,7 @@ import { initTelemetry } from './services/telemetryService';
 import { loadBlocklist } from './services/corsBlocklist';
 import { startPreWarmingLoop, stopPreWarmingLoop } from './services/validationService';
 import { onAuthStateChange, extractUserProfile, getSession } from './services/authService';
+import { fetchPlaylistByShareCode } from './services/playlistService';
 
 export default function App() {
   const isDataLoaded = useIDKStreamStore((s) => s.isDataLoaded);
@@ -42,6 +43,21 @@ export default function App() {
         if (!cancelled) {
           await initTelemetry();
           setChannels(channels);
+
+          // Check if a shared playlist is loaded from the URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const playlistCode = urlParams.get('playlist');
+          if (playlistCode) {
+            try {
+              const shared = await fetchPlaylistByShareCode(playlistCode);
+              if (shared) {
+                useIDKStreamStore.getState().setSharedPlaylist(shared);
+              }
+            } catch (pErr) {
+              console.error('[IDKstream] Failed to load shared playlist:', pErr);
+            }
+          }
+
           startPreWarmingLoop();
         }
       } catch (err) {

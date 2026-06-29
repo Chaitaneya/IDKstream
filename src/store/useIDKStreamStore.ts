@@ -17,6 +17,7 @@ import {
   fetchUserPlaylists,
   createPlaylist as createPlaylistAPI,
   deletePlaylist as deletePlaylistAPI,
+  sharePlaylist as sharePlaylistAPI,
 } from '../services/playlistService';
 
 export const SAFE_STREAMS: IPTVChannel[] = [
@@ -98,6 +99,7 @@ export const useIDKStreamStore = create<IDKStreamState>((set, get) => ({
 
   // ── Playlists ───────────────────────────────────────
   playlists: [],
+  sharedPlaylist: null,
 
   // ── Actions ─────────────────────────────────────────
   setChannels: (channels: IPTVChannel[]) =>
@@ -318,5 +320,20 @@ export const useIDKStreamStore = create<IDKStreamState>((set, get) => ({
     }
   },
 
+  sharePlaylist: async (id: string) => {
+    const shareCode = await sharePlaylistAPI(id);
+    if (shareCode) {
+      const { playlists } = get();
+      set({
+        playlists: playlists.map((p) =>
+          p.id === id ? { ...p, is_public: true, share_code: shareCode } : p
+        ),
+      });
+    }
+    return shareCode;
+  },
+
+  setSharedPlaylist: (playlist: Playlist | null) =>
+    set({ sharedPlaylist: playlist }),
 
 }));
